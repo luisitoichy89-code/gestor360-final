@@ -5,28 +5,64 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get Date
+        id: get-date
+        run: echo "date=$(/bin/date -u +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Cache Buildozer global directory
+        uses: actions/cache@v4
+        with:
+          path: .buildozer_global
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
+
+      - name: Cache Buildozer build directory
+        uses: actions/cache@v4
+        with:
+          path: .buildozer
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+
+      - name: Install system dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt-get install -y -qq \
+            build-essential git ffmpeg \
+            libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev \
+            libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev libunwind-dev \
+            zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev \
+            openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev \
+            uuid-dev libgstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+            zip unzip autoconf automake libtool pkg-config cmake \
+            libncurses5-dev libncursesw5-dev libtinfo5 libffi-dev libssl-dev \
+            openjdk-17-jdk wget python3-full
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install buildozer cython python-dotenv
+
+      - name: Install pip dependencies
+        run: pip install --upgrade pip && pip install buildozer cython==0.29.33 python-dotenv
+
       - name: Setup Android SDK
         run: |
-          sudo apt update -qq
-          sudo apt install -y -qq build-essential git zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget zip openjdk-17-jdk autoconf libtool unzip
           export ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
-          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-          mkdir -p $ANDROID_SDK_ROOT/licenses
-          mkdir -p $ANDROID_SDK_ROOT/tools/bin
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools $ANDROID_SDK_ROOT/licenses $ANDROID_SDK_ROOT/tools/bin
           echo -e "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > $ANDROID_SDK_ROOT/licenses/android-sdk-license
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
-          unzip -q /tmp/cmdtools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
-          mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+          unzip -qo /tmp/cmdtools.zip -d $ANDROID_SDK_ROOT/cmdline-tools
+          mv $ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest 2>/dev/null || true
           ln -sf $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager $ANDROID_SDK_ROOT/tools/bin/sdkmanager
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
           $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
       - name: Build APK
-        run: buildozer android debug
+        run: yes | buildozer -v android debug
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
