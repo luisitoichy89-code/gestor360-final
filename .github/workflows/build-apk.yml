@@ -9,10 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fix permissions and build
+      - name: Build APK
         run: |
-          chown -R root:root /github/home /__w
-          buildozer android debug
+          chown -R user:user /github/home /__w 2>/dev/null || true
+          su -c "cd /__w/gestor360-final/gestor360-final && yes | buildozer android debug" user 2>/dev/null || yes | buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
