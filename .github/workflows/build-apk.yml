@@ -5,32 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Install dependencies
+        run: pip install buildozer cython python-dotenv
       - name: Setup Android SDK
         run: |
-          sudo apt update
-          sudo apt install -y build-essential git zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget zip openjdk-17-jdk autoconf libtool pkg-config
-          # Instalar Android SDK command-line tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools-linux-11076708_latest.zip
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools
-          mv cmdline-tools $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest
-          # Aceptar licencias
-          yes | $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-          # Instalar build-tools y platform
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
-          ln -sf $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
-          $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;34.0.0" "platforms;android-34"
-          pip install buildozer cython
-      - name: Generate Keystore
-        run: |
-          keytool -genkey -v -keystore gestor360.keystore -alias gestor360 -keyalg RSA -keysize 2048 -validity 10000 -storepass Gestor3602026 -keypass Gestor3602026 -dname "CN=Luisito, OU=Gestor360, O=Gestor360, L=LaHabana, ST=LaHabana, C=CU"
-      - name: Build APK Release
-        run: buildozer android release
+          sudo apt update -qq
+          sudo apt install -y -qq build-essential git zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget zip openjdk-17-jdk autoconf libtool
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/licenses
+          echo -e "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
+      - name: Build APK
+        run: buildozer android debug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Gestor360-APK-Release
+          name: Gestor360-APK
           path: bin/*.apk
