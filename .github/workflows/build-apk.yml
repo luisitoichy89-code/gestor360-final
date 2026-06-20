@@ -3,18 +3,19 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: kivy/buildozer:latest
+      options: --user root
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build with Buildozer Action
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: buildozer android debug
-          buildozer_version: stable
+      - name: Fix permissions and build
+        run: |
+          chown -R root:root /github/home /__w
+          buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Gestor360-APK
-          path: ${{ steps.buildozer.outputs.filename }}
+          path: bin/*.apk
