@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 180" width="520" height="180">
+  <defs>
+
+    <!-- Gradiente principal G·E·S·T·O·R -->
+    <linearGradient id="grad-main" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#6C63FF"/>
+      <stop offset="38%"  stop-color="#3B82F6"/>
+      <stop offset="72%"  stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+
+    <!-- Gradiente para el "360" — más cálido -->
+    <linearGradient id="grad-360" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#F59E0B"/>
+      <stop offset="50%"  stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#EC4899"/>
+    </linearGradient>
+
+    <!-- Gradiente para el ícono del escudo/órbita -->
+    <linearGradient id="grad-icon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#6C63FF"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+
+    <!-- Gradiente arco decorativo -->
+    <linearGradient id="grad-arc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#6C63FF" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#3B82F6" stop-opacity="1"/>
+      <stop offset="70%"  stop-color="#06B6D4" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Sombra suave para el ícono -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#6C63FF" flood-opacity="0.35"/>
+    </filter>
+
+    <!-- Glow para el "360" -->
+    <filter id="glow360" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+  </defs>
+
+  <!-- ══ FONDO TRANSPARENTE ══ -->
+
+  <!-- ══ ÍCONO IZQUIERDO: escudo geométrico con órbita ══ -->
+  <g transform="translate(18, 18)" filter="url(#shadow)">
+
+    <!-- Base del escudo (hexágono redondeado) -->
+    <rect x="0" y="0" width="72" height="72" rx="18" ry="18"
+          fill="url(#grad-icon)" opacity="1"/>
+
+    <!-- Brillo sutil en el escudo -->
+    <rect x="0" y="0" width="72" height="36" rx="18" ry="18"
+          fill="white" opacity="0.08"/>
+
+    <!-- Órbita exterior -->
+    <ellipse cx="36" cy="36" rx="22" ry="22"
+             fill="none" stroke="white" stroke-width="2" stroke-opacity="0.3"
+             stroke-dasharray="4 3"/>
+
+    <!-- Órbita inclinada -->
+    <ellipse cx="36" cy="36" rx="22" ry="9"
+             fill="none" stroke="white" stroke-width="1.8" stroke-opacity="0.55"
+             transform="rotate(-35 36 36)"/>
+
+    <!-- Punto central / núcleo -->
+    <circle cx="36" cy="36" r="7" fill="white" opacity="0.92"/>
+    <circle cx="36" cy="36" r="3.5" fill="url(#grad-icon)" opacity="1"/>
+
+    <!-- Punto satélite en órbita -->
+    <circle cx="55" cy="28" r="3" fill="white" opacity="0.85"/>
+
+    <!-- Marca "360" dentro del escudo — pequeña -->
+    <text x="36" y="62" text-anchor="middle"
+          font-family="'Inter','Segoe UI',sans-serif"
+          font-size="10" font-weight="800" fill="white" opacity="0.75"
+          letter-spacing="0.5">360</text>
+  </g>
+
+  <!-- ══ TEXTO PRINCIPAL: Gestor360° (una sola línea, pegado) ══ -->
+  <text x="104" y="74"
+        font-family="'Inter','Segoe UI',Arial,sans-serif"
+        font-size="52" font-weight="800"
+        letter-spacing="-1.5">
+    <tspan fill="url(#grad-main)">Gestor</tspan><tspan fill="url(#grad-360)" filter="url(#glow360)">360</tspan><tspan fill="url(#grad-360)" font-size="28" dy="-18" filter="url(#glow360)">°</tspan>
+  </text>
+
+  <!-- ══ LÍNEA SEPARADORA CON GRADIENTE ══ -->
+  <rect x="104" y="84" width="360" height="2" rx="1" fill="url(#grad-arc)"/>
+
+  <!-- ══ SUBTÍTULO LÍNEA 1: MIPYMES & TCP ══ -->
+  <text x="104" y="108"
+        font-family="'Inter','Segoe UI',Arial,sans-serif"
+        font-size="15.5" font-weight="700"
+        fill="#94A3B8"
+        letter-spacing="3.5">MIPYMES &amp; TCP</text>
+
+  <!-- ══ SUBTÍTULO LÍNEA 2: Y PRIVADOS ══ -->
+  <text x="104" y="128"
+        font-family="'Inter','Segoe UI',Arial,sans-serif"
+        font-size="13" font-weight="500"
+        fill="#64748B"
+        letter-spacing="4.5">Y PRIVADOS</text>
+
+  <!-- ══ TAGLINE INFERIOR ══ -->
+  <text x="104" y="155"
+        font-family="'Inter','Segoe UI',Arial,sans-serif"
+        font-size="10" font-weight="500"
+        fill="#475569"
+        letter-spacing="1.2">Sistema de Gestión Comercial</text>
+
+  <!-- ══ PUNTO DECORATIVO ACCENT ══ -->
+  <circle cx="97" cy="148" r="3.5" fill="url(#grad-360)" opacity="0.8"/>
+
+</svg>
