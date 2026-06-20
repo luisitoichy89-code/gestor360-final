@@ -11,8 +11,9 @@ jobs:
 
       - name: Build APK
         run: |
-          chown -R user:user /github/home /__w 2>/dev/null || true
-          su -c "cd /__w/gestor360-final/gestor360-final && yes | buildozer android debug" user 2>/dev/null || yes | buildozer android debug
+          export BUILDOZER_WARN_ON_ROOT=0
+          cd /__w/gestor360-final/gestor360-final
+          buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
